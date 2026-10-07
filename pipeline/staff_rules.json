@@ -1,0 +1,132 @@
+{
+  "_about": "Per-staff rules to ESTIMATE paid hours from Finalised clocks when no payroll CSV is available. Fitted 2026-10-07 against Custom Payroll CSV totals for 2026-09-23 to 2026-10-06. paid_start: shift start used by the Jobman paid-start rule (Aaron, confirmed 7 Oct 2026 NZ). If clock-on is at/after paid_start, hours count from clock-on. If clock-on is before paid_start and a task started before paid_start, early hours count from max(clock-on, first_task) (no clip to paid_start). If clock-on is before paid_start and no task before paid_start, hours count from paid_start (show early-clock note). break_h: unpaid break deducted when the day is longer than break_after_h.",
+  "rules": {
+    "Ashton Pienaar": {
+      "paid_start": "07:00",
+      "break_h": 0.5,
+      "break_after_h": 5.5,
+      "fit_days_within_15m": 10,
+      "fit_days": 10,
+      "fit_mean_abs_err_min": 0.3
+    },
+    "Ben Mackay": {
+      "paid_start": "07:00",
+      "break_h": 0.5,
+      "break_after_h": 5.5,
+      "fit_days_within_15m": 9,
+      "fit_days": 10,
+      "fit_mean_abs_err_min": 3.5
+    },
+    "Bruce Warner": {
+      "paid_start": "07:00",
+      "break_h": 0.5,
+      "break_after_h": 5.5,
+      "fit_days_within_15m": 9,
+      "fit_days": 9,
+      "fit_mean_abs_err_min": 2.0
+    },
+    "Daniyar Sarsembayev": {
+      "paid_start": "07:00",
+      "break_h": 0.5,
+      "break_after_h": 5.5,
+      "fit_days_within_15m": 8,
+      "fit_days": 9,
+      "fit_mean_abs_err_min": 9.3
+    },
+    "Jacques Kroef": {
+      "paid_start": "07:00",
+      "break_h": 0.5,
+      "break_after_h": 5.5,
+      "fit_days_within_15m": 9,
+      "fit_days": 9,
+      "fit_mean_abs_err_min": 1.1
+    },
+    "Nili Halafihi": {
+      "paid_start": "07:00",
+      "break_h": 0.5,
+      "break_after_h": 5.5,
+      "fit_days_within_15m": 9,
+      "fit_days": 10,
+      "fit_mean_abs_err_min": 3.6
+    },
+    "Patrick Tubman": {
+      "paid_start": null,
+      "break_h": 0.5,
+      "break_after_h": 5.5,
+      "fit_days_within_15m": 10,
+      "fit_days": 10,
+      "fit_mean_abs_err_min": 0.5
+    },
+    "Madi Wright": {
+      "paid_start": "08:00",
+      "break_h": 0.0,
+      "break_after_h": 5.5,
+      "fit_days_within_15m": 10,
+      "fit_days": 10,
+      "fit_mean_abs_err_min": 0.5
+    },
+    "Andrea Birchner": {
+      "paid_start": null,
+      "break_h": 0.0,
+      "break_after_h": 5.5,
+      "fit_days_within_15m": 6,
+      "fit_days": 10,
+      "fit_mean_abs_err_min": 66.6
+    },
+    "Anna Smith": {
+      "paid_start": null,
+      "break_h": 0.0,
+      "break_after_h": 5.5,
+      "fit_days_within_15m": 4,
+      "fit_days": 8,
+      "fit_mean_abs_err_min": 71.5
+    },
+    "Duncan Nicholson": {
+      "paid_start": null,
+      "break_h": 0.0,
+      "break_after_h": 5.5,
+      "fit_days_within_15m": 6,
+      "fit_days": 10,
+      "fit_mean_abs_err_min": 11.9
+    },
+    "Agustin Viegas": {
+      "paid_start": null,
+      "break_h": 0.5,
+      "break_after_h": 5.5,
+      "fit_days_within_15m": 7,
+      "fit_days": 7,
+      "fit_mean_abs_err_min": 0.5
+    },
+    "Clebson Almeida": {
+      "paid_start": null,
+      "break_h": 0.5,
+      "break_after_h": 5.5,
+      "fit_days_within_15m": 5,
+      "fit_days": 6,
+      "fit_mean_abs_err_min": 74.6
+    },
+    "Gladys Rioflorido": {
+      "paid_start": null,
+      "break_h": 0.0,
+      "break_after_h": 5.5,
+      "fit_days_within_15m": 9,
+      "fit_days": 10,
+      "fit_mean_abs_err_min": 8.5
+    },
+    "Jordan Carlson": {
+      "paid_start": null,
+      "break_h": 0.5,
+      "break_after_h": 5.5,
+      "fit_days": 0,
+      "note": "no CSV days to fit; default rule"
+    },
+    "Matthew Riley": {
+      "paid_start": null,
+      "break_h": 0.5,
+      "break_after_h": 5.5,
+      "fit_days_within_15m": 5,
+      "fit_days": 5,
+      "fit_mean_abs_err_min": 0.2
+    }
+  }
+}

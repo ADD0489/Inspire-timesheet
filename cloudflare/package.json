@@ -1,0 +1,14 @@
+{
+  "name": "inspire-staff-timesheet-view",
+  "private": true,
+  "version": "2.0.0",
+  "scripts": {
+    "dev": "WRANGLER_SEND_METRICS=false wrangler dev --local --port 8787",
+    "deploy": "WRANGLER_SEND_METRICS=false wrangler deploy",
+    "test": "node --test test/requests.test.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  },
+  "type": "module"
+}

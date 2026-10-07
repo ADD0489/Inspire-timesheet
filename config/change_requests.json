@@ -1,0 +1,28 @@
+{
+  "_about": "Who gets 'Request a change' emails, and the rules for requests. Edit this file, then run pipeline/push_cloudflare.py (or the nightly run) to publish it. Team names must match /workspace/staff_tab_map.json.",
+  "enabled": true,
+  "from": {
+    "address": "timesheets@inspirekitchens.co.nz",
+    "name": "Inspire Kitchens Timesheets"
+  },
+  "managers": {
+    "AKL Operations": { "to": "Greg@inspirekitchens.co.nz" },
+    "AKL Sales": { "to": "aaron@inspirekitchens.co.nz" },
+    "QT Sales + Dunc": {
+      "to": "Dan@inspirekitchens.co.nz",
+      "cover": [
+        { "from": "2026-10-01", "until": "2026-10-16", "to": "aaron@inspirekitchens.co.nz", "why": "Dan on leave" }
+      ]
+    },
+    "QT Ops": { "to": "qtops@inspirekitchens.co.nz" }
+  },
+  "fallback_to": "aaron@inspirekitchens.co.nz",
+  "rules": {
+    "per_staff_per_day": 5,
+    "all_staff_per_day": 60,
+    "time_step_minutes": 1,
+    "max_shift_hours": 16,
+    "reason_max_chars": 500,
+    "allow_previous_fortnight": true
+  }
+}

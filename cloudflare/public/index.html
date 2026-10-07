@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>My timesheet</title>
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<div class="wrap" id="app">
+  <div class="brand">Inspire Kitchens</div>
+  <h1 id="hello">My timesheet</h1>
+  <div class="period" id="period"></div>
+  <div class="card" id="message" hidden></div>
+  <div id="main" hidden>
+    <div class="tabs" id="tabs" hidden>
+      <button class="tab" id="tab-current" type="button" aria-pressed="true">This fortnight</button>
+      <button class="tab" id="tab-previous" type="button" aria-pressed="false">Last fortnight</button>
+    </div>
+    <div class="card" id="total-card"></div>
+    <div class="card"><ul class="days" id="days"></ul></div>
+    <div class="foot">
+      <p id="updated"></p>
+      <p><strong>Something look wrong?</strong> <span id="foot-help">Please speak to your manager.</span></p>
+      <p><button class="req-main" id="req-open" type="button" hidden>Request a change</button></p>
+      <p>Times come from Jobman. This page is just for you, so please keep your link private.</p>
+    </div>
+  </div>
+</div>
+
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="req-title">
+  <div class="sheet-card">
+    <form id="req-form" novalidate>
+      <h2 id="req-title">Request a change</h2>
+      <p class="sheet-intro">Tell your manager the correct start and finish times. They check it and update Jobman.</p>
+      <label class="fld"><span>Day</span><select id="req-date"></select></label>
+      <div class="now" id="req-now"></div>
+      <div class="row2">
+        <label class="fld"><span>Correct start</span><input id="req-start" type="time" required></label>
+        <label class="fld"><span>Correct finish</span><input id="req-finish" type="time" required></label>
+      </div>
+      <label class="fld"><span>Reason (optional)</span><textarea id="req-reason" rows="3" placeholder="For example: forgot to clock off, phone was flat"></textarea></label>
+      <div class="err" id="req-error" role="alert" hidden></div>
+      <p class="small" id="req-limit"></p>
+      <div class="actions">
+        <button class="btn ghost" type="button" id="req-cancel">Cancel</button>
+        <button class="btn" type="submit" id="req-send">Send request</button>
+      </div>
+    </form>
+    <div id="req-done" hidden>
+      <div class="tick" aria-hidden="true">&#10003;</div>
+      <h2>Request sent</h2>
+      <p id="req-done-text"></p>
+      <p class="small" id="req-done-ref"></p>
+      <p class="small">Jobman has not changed yet. Your hours here will update after your manager makes the change.</p>
+      <div class="actions"><button class="btn" type="button" id="req-close">Done</button></div>
+    </div>
+  </div>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>
