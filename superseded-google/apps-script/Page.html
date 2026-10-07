@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My timesheet</title>
+<style>
+  :root {
+    --ink: #1d2433; --muted: #5d6679; --line: #e6e8ee; --bg: #f4f5f7; --card: #ffffff;
+    --brand: #1f4e79; --brand-soft: #e8f0f8; --ok: #2e7d4f; --amber: #9a5b00; --amber-bg: #fff4e0;
+    --weekend: #f1f2f5; --leave: #5b3fa6; --leave-bg: #efeafb;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 16px; line-height: 1.4; }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 16px 14px 28px; }
+  .brand { font-size: 13px; color: var(--muted); letter-spacing: .03em; text-transform: uppercase; }
+  h1 { font-size: 22px; margin: 4px 0 2px; }
+  .period { color: var(--muted); font-size: 15px; }
+  .tabs { display: flex; gap: 8px; margin: 14px 0 12px; }
+  .tab { flex: 1; border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 10px;
+         padding: 9px 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .tab[aria-pressed="true"] { background: var(--brand); color: #fff; border-color: var(--brand); }
+  .card { background: var(--card); border-radius: 14px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.07); margin-bottom: 14px; }
+  .total-label { font-size: 14px; color: var(--muted); }
+  .total { font-size: 44px; font-weight: 800; letter-spacing: -.02em; margin: 2px 0 8px; color: var(--brand); }
+  .bar { height: 12px; background: var(--brand-soft); border-radius: 99px; overflow: hidden; }
+  .bar > div { height: 100%; background: var(--brand); border-radius: 99px; }
+  .bar-cap { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .chip { background: var(--bg); border-radius: 8px; padding: 6px 10px; font-size: 14px; }
+  .chip b { font-weight: 700; }
+  .notice { margin-top: 12px; font-size: 14px; padding: 9px 11px; border-radius: 8px; background: var(--amber-bg); color: var(--amber); }
+  .info { margin-top: 10px; font-size: 13px; color: var(--muted); }
+  .days { list-style: none; margin: 0; padding: 0; }
+  .day { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 12px 4px; border-top: 1px solid var(--line); }
+  .day:first-child { border-top: 0; }
+  .day.weekend { background: var(--weekend); border-radius: 8px; padding-left: 10px; padding-right: 10px; color: var(--muted); }
+  .day.future { opacity: .55; }
+  .d-left { min-width: 0; }
+  .d-date { font-weight: 700; font-size: 15px; }
+  .d-clock { font-size: 15px; margin-top: 2px; }
+  .d-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .d-right { text-align: right; white-space: nowrap; }
+  .d-hours { font-weight: 700; font-size: 16px; }
+  .d-run { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .badge { display: inline-block; font-size: 12px; font-weight: 700; border-radius: 6px; padding: 2px 7px; margin-top: 4px; }
+  .badge.check { background: var(--amber-bg); color: var(--amber); }
+  .badge.leave { background: var(--leave-bg); color: var(--leave); }
+  .req { display: none; margin-top: 6px; font-size: 13px; border: 1px solid var(--brand); color: var(--brand); background: #fff;
+         border-radius: 8px; padding: 5px 9px; }
+  .features-change .req { display: inline-block; }
+  .foot { font-size: 14px; color: var(--muted); text-align: center; padding: 6px 8px; }
+  .foot p { margin: 6px 0; }
+  .foot strong { color: var(--ink); }
+  .empty { color: var(--muted); font-size: 15px; }
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <div class="brand">Inspire Kitchens</div>
+  <h1 id="hello">My timesheet</h1>
+  <div class="period" id="period"></div>
+  <div class="tabs" id="tabs" hidden>
+    <button class="tab" id="tab-current" type="button" aria-pressed="true">This fortnight</button>
+    <button class="tab" id="tab-previous" type="button" aria-pressed="false">Last fortnight</button>
+  </div>
+  <div class="card" id="total-card"></div>
+  <div class="card"><ul class="days" id="days"></ul></div>
+  <div class="foot">
+    <p id="updated"></p>
+    <p><strong>Something look wrong?</strong> Please speak to your manager.</p>
+    <p>Times come from Jobman. This page is just for you, so please keep your link private.</p>
+  </div>
+</div>
+<script>
+  var STV = <?!= payloadJson ?>;
+</script>
+<script>
+(function () {
+  var view = STV.current ? 'current' : 'previous';
+  if (STV.features && STV.features.changeRequests) document.body.className += ' features-change';
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined && text !== null) e.textContent = text;
+    return e;
+  }
+  function plural(n, one, many) { return n + ' ' + (n === 1 ? one : many); }
+
+  function render() {
+    var s = STV[view];
+    var tabs = document.getElementById('tabs');
+    tabs.hidden = !(STV.current && STV.previous);
+    document.getElementById('tab-current').setAttribute('aria-pressed', view === 'current');
+    document.getElementById('tab-previous').setAttribute('aria-pressed', view === 'previous');
+    var card = document.getElementById('total-card');
+    var list = document.getElementById('days');
+    card.innerHTML = ''; list.innerHTML = '';
+    if (!s) { card.appendChild(el('div', 'empty', 'Nothing to show for this fortnight yet.')); return; }
+
+    document.getElementById('hello').textContent = 'Kia ora ' + s.first_name;
+    document.getElementById('period').textContent = 'Pay fortnight: ' + s.period.label;
+    document.getElementById('updated').textContent = 'Last updated ' + s.updated_label + ' (NZ time)';
+
+    var t = s.totals;
+    var finished = s.range.to >= s.period.end;
+    card.appendChild(el('div', 'total-label', finished ? 'Your total for the fortnight' : 'Your total so far this fortnight'));
+    card.appendChild(el('div', 'total', t.total_label));
+    var bar = el('div', 'bar'); var fill = el('div');
+    fill.style.width = Math.max(0, Math.min(100, t.progress_pct)) + '%';
+    bar.appendChild(fill); card.appendChild(bar);
+    var cap = el('div', 'bar-cap');
+    cap.appendChild(el('span', '', Math.round(t.progress_pct) + '% of ' + t.target_h + 'h'));
+    var left = Math.round((t.target_h - t.total_h) * 60);
+    cap.appendChild(el('span', '', left <= 0 ? 'Past ' + t.target_h + 'h' : Math.floor(left / 60) + 'h ' + ('0' + (left % 60)).slice(-2) + 'm to go'));
+    card.appendChild(cap);
+    var chips = el('div', 'chips');
+    [['Ordinary', t.ordinary_label], ['Overtime', t.overtime_label], ['Leave', t.leave_label]].forEach(function (c) {
+      var ch = el('span', 'chip'); ch.appendChild(document.createTextNode(c[0] + ' ')); ch.appendChild(el('b', '', c[1])); chips.appendChild(ch);
+    });
+    card.appendChild(chips);
+    if (t.fortnight_total_being_checked) {
+      card.appendChild(el('div', 'notice', 'Your fortnight total is being double-checked. Some days are not included yet.'));
+    } else if (t.being_checked_days_not_in_total > 0) {
+      card.appendChild(el('div', 'notice', plural(t.being_checked_days_not_in_total, 'day is', 'days are') + ' being checked and not in your total yet.'));
+    } else if (t.being_checked_days > 0) {
+      card.appendChild(el('div', 'notice', plural(t.being_checked_days, 'day is', 'days are') + ' being checked. The hours are included.'));
+    }
+    if (t.hours_basis === 'clock_estimate' || t.hours_basis === 'mixed') {
+      card.appendChild(el('div', 'info', 'Hours are worked out from your clock times, less unpaid breaks. Your paid hours are confirmed when the fortnight is approved.'));
+    }
+    card.appendChild(el('div', 'info', 'Overtime here means hours over 8 in a day.'));
+
+    var snap = STV.features && STV.features.displaySnap;
+    s.days.forEach(function (d) {
+      var li = el('li', 'day' + (d.is_weekend ? ' weekend' : '') + (d.status === 'future' ? ' future' : ''));
+      var left = el('div', 'd-left'); var right = el('div', 'd-right');
+      left.appendChild(el('div', 'd-date', d.day_label));
+      var on = snap ? d.on_snap15 : d.on, off = snap ? d.off_snap15 : d.off;
+      if (d.status === 'ok' && on && off) {
+        left.appendChild(el('div', 'd-clock', on + ' to ' + off));
+        if (d.paid_from) left.appendChild(el('div', 'd-sub', 'Paid from ' + d.paid_from));
+      } else if (d.status === 'being_checked') {
+        left.appendChild(el('span', 'badge check', 'Being checked'));
+        if (d.note) left.appendChild(el('div', 'd-sub', d.note));
+      } else if (d.status === 'future') {
+        left.appendChild(el('div', 'd-sub', 'Coming up'));
+      } else if (d.status === 'today_pending') {
+        left.appendChild(el('div', 'd-sub', d.note || "Today's hours show here after you clock off."));
+      } else if (d.status === 'no_entry') {
+        left.appendChild(el('div', 'd-sub', d.is_weekend ? 'Weekend' : 'No clock entry'));
+      }
+      (d.leave || []).forEach(function (l) { left.appendChild(el('span', 'badge leave', l.type + ' ' + l.label)); });
+      if (d.status === 'ok' || d.status === 'being_checked') {
+        var req = el('button', 'req', 'Request a change'); req.type = 'button'; req.setAttribute('data-date', d.date);
+        left.appendChild(req);
+      }
+      if (d.worked_label) right.appendChild(el('div', 'd-hours', d.worked_label));
+      else if (d.status === 'being_checked') right.appendChild(el('div', 'd-hours', '--'));
+      if (d.running_total_label && d.in_range && (d.worked_label || (d.leave && d.leave.length))) right.appendChild(el('div', 'd-run', 'Total ' + d.running_total_label));
+      li.appendChild(left); li.appendChild(right); list.appendChild(li);
+    });
+  }
+  document.getElementById('tab-current').onclick = function () { view = 'current'; render(); };
+  document.getElementById('tab-previous').onclick = function () { view = 'previous'; render(); };
+  render();
+})();
+</script>
+</body>
+</html>

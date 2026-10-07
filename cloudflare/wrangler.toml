@@ -1,0 +1,27 @@
+# Inspire Kitchens: Staff Timesheet View (view + "Request a change"), Cloudflare Workers free plan.
+# Before the first deploy, replace REPLACE_WITH_KV_NAMESPACE_ID with the id of the KV namespace
+# Aaron creates (Workers & Pages > KV > Create, name "stv"). Local dev ignores it.
+name = "inspire-timesheets"
+main = "src/worker.js"
+compatibility_date = "2026-09-01"
+workers_dev = true
+preview_urls = false
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+[[kv_namespaces]]
+binding = "STV"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
+
+[vars]
+# mock = never sends, stores the email in KV for checking (safe default, used for all testing).
+# graph = Microsoft 365 sendMail from the company mailbox in MAIL_SENDER (recommended for live).
+# resend = Resend API (fallback). Secrets are set with `wrangler secret put`, never in this file.
+MAIL_PROVIDER = "mock"
+MAIL_SENDER = "timesheets@inspirekitchens.co.nz"
+
+[observability]
+enabled = true

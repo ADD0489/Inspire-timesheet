@@ -1,0 +1,12 @@
+secrets/
+inputs/
+out/
+probe/
+data-sheet/
+preview/
+node_modules/
+__pycache__/
+.wrangler/
+*.pyc
+.env*
+.dev.vars
